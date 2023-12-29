@@ -1,0 +1,4 @@
+dbConfig:
+  dbName: googleKeep
+  port: 27017
+  host: localhost
