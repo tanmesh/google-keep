@@ -1,40 +1,24 @@
 package org.keep.wsRequestModel;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.keep.entity.Note;
+
+@Getter
+@Setter
 public class NoteData {
     private String noteId;
     private String title;
     private String noteContent; // Json parsed string
     private String emailId;
 
-    public String getNoteId() {
-        return noteId;
+    public NoteData() {
     }
 
-    public void setNoteId(String noteId) {
-        this.noteId = noteId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getNoteContent() {
-        return noteContent;
-    }
-
-    public void setNoteContent(String noteContent) {
-        this.noteContent = noteContent;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
+    public NoteData(Note note) {
+        this.noteId = note.getNoteId();
+        this.title = note.getTitle();
+        this.noteContent = note.getNoteContent();
+        this.emailId = note.getEmailId();
     }
 }

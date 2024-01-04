@@ -1,6 +1,9 @@
 package org.keep.resource;
 
+import io.dropwizard.auth.Auth;
+import org.keep.authentication.UserSession;
 import org.keep.entity.Note;
+import org.keep.service.AccessTokenService;
 import org.keep.service.INoteService;
 import org.keep.service.IUserService;
 import org.keep.wsRequestModel.NoteData;
@@ -16,9 +19,12 @@ public class UserResource {
     private IUserService userService;
     private INoteService noteService;
 
-    public UserResource(IUserService userService, INoteService noteService) {
+    private AccessTokenService accessTokenService;
+
+    public UserResource(IUserService userService, INoteService noteService, AccessTokenService accessTokenService) {
         this.userService = userService;
         this.noteService = noteService;
+        this.accessTokenService = accessTokenService;
     }
 
     @POST
@@ -49,6 +55,7 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUser(UserData userData) {
+        UserSession userSession;
         try {
             String emailId = userData.getEmailId();
             if (emailId == null || emailId.isEmpty()) {
@@ -60,25 +67,24 @@ public class UserResource {
                 throw new Exception("password cannot be null");
             }
 
-            userService.login(emailId, password);
+            userSession = userService.login(emailId, password);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        return Response.status(Response.Status.ACCEPTED).build();
+        return Response.status(Response.Status.ACCEPTED).entity(userSession).build();
     }
 
     @GET
     @Path("getAllNotes")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getNote(UserData userData) {
-        UserData outUserData = new UserData();
+    public Response getNote(@Auth UserSession userSession) {
+        List<NoteData> outNotes;
         try {
-            List<NoteData> notes = userService.getAllNotes(userData.getEmailId());
-            outUserData.setNotes(notes);
+            outNotes = userService.getAllNotes(userSession.getEmailId());
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        return Response.status(Response.Status.ACCEPTED).entity(outUserData).build();
+        return Response.status(Response.Status.ACCEPTED).entity(outNotes).build();
     }
 }

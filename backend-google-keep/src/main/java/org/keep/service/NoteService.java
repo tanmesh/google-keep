@@ -1,5 +1,8 @@
 package org.keep.service;
 
+import io.dropwizard.auth.Auth;
+import org.bson.types.ObjectId;
+import org.keep.authentication.UserSession;
 import org.keep.dao.NoteDao;
 import org.keep.entity.Note;
 
@@ -13,7 +16,7 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public Object add(Note note) {
+    public String add(Note note) {
         System.out.println("Adding : " + note.getTitle() );
 
         return noteDao.addNote(note);

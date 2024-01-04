@@ -5,14 +5,13 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.keep.authentication.AccessTokenAuthenticator;
+import org.keep.authentication.AccessTokenSecurityProvider;
 import org.keep.dao.NoteDao;
 import org.keep.dao.UserDao;
 import org.keep.resource.NoteResource;
 import org.keep.resource.UserResource;
-import org.keep.service.INoteService;
-import org.keep.service.IUserService;
-import org.keep.service.NoteService;
-import org.keep.service.UserService;
+import org.keep.service.*;
 import org.keep.utils.MongoUtils;
 import org.mongodb.morphia.Datastore;
 
@@ -51,19 +50,25 @@ public class App extends Application<Configurations> {
     public void run(Configurations configurations, Environment environment) throws Exception {
         Datastore ds = MongoUtils.createDatastore(configurations.getDBConfig());
 
+        AccessTokenService accessTokenService = new RedisAccessTokenService();
+
         // Note layer
         NoteDao noteDao = new NoteDao(ds);
         INoteService noteService = new NoteService(noteDao);
 
         // User layer
         UserDao userDao = new UserDao(ds);
-        IUserService userService = new UserService(userDao, noteDao);
+        IUserService userService = new UserService(userDao, noteDao, accessTokenService);
 
-        NoteResource noteResource = new NoteResource(noteService, userService);
-        UserResource userResource = new UserResource(userService, noteService);
+        NoteResource noteResource = new NoteResource(noteService, userService, accessTokenService);
+        UserResource userResource = new UserResource(userService, noteService, accessTokenService);
+
+
+        AccessTokenAuthenticator accessTokenAuthenticator = new AccessTokenAuthenticator(accessTokenService);
 
         environment.jersey().register(noteResource);
         environment.jersey().register(userResource);
+        environment.jersey().register(new AccessTokenSecurityProvider<>(accessTokenAuthenticator));
         configureCors(environment);
     }
 }
