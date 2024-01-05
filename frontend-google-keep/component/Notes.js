@@ -10,14 +10,14 @@ function Notes({ notes }) {
     return (
         <View style={styles.note} >
             {notes.map(note => (
-                <NoteItem title={note.title} content={note.content} />
+                <NoteItem id={note.noteId} title={note.title} content={note.content} />
             ))}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    note: { width: '90%', justifyContent: 'center', marginTop: '10%' }
+    note: { width: '80%', justifyContent: 'center', marginTop: '10%', gap: '5%' }
 });
 
 

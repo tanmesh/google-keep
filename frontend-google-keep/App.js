@@ -1,5 +1,6 @@
 import Home from './screens/Home';
 import Login from './screens/Login';
+import Edit from './screens/Edit';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,11 +12,12 @@ export default function App() {
       <Stack.Navigator
         initialRouteName='Login'
         screenOptions={{
-          headerShown: false,
+          // headerShown: false,
           cardStyle: { backgroundColor: 'white' }
         }}>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="Edit" component={Edit} />
       </Stack.Navigator>
     </NavigationContainer>
   );

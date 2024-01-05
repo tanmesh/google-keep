@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, TouchableHighlight } from 'react-native'
+import { Text, View, StyleSheet, TouchableHighlight, CheckBox } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
-function NoteItem({ title, content }) {
+function NoteItem({ id, title, content }) {
     const [type, setType] = useState('');
     const [data, setData] = useState('' || []);
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         console.log('content:', content);
@@ -13,7 +16,6 @@ function NoteItem({ title, content }) {
             setType(parsedContent.type);
             setData(parsedContent.content);
         } catch (error) {
-            setData(content); // TODO: remove this line
             console.error('Error parsing content as JSON:', error);
         }
     }, [content])
@@ -23,11 +25,17 @@ function NoteItem({ title, content }) {
     return (
         <TouchableHighlight
             onPress={() => { }}
-            onPressIn={() => setBackgroundColor('#ffdd9a')}
+            onPressIn={() => {
+                setBackgroundColor('#ffdd9a');
+                navigation.navigate('Edit', {
+                    title: title,
+                    content: content,
+                    id: id,
+                });
+            }}
             onPressOut={() => setBackgroundColor('#ffcd67')}
-            underlayColor="transparent"
-        >
-            <View style={[styles.container, { backgroundColor }]}>
+            underlayColor="transparent">
+            <View style={[styles.container, { backgroundColor }, styles.shadowProp]}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.title}> {title} </Text>
                     <Ionicons name="pencil" size={15} color="black" />
@@ -53,6 +61,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFD580',
         padding: '2%',
         borderRadius: 10,
+    },
+    shadowProp: {
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
     },
     header: { fontSize: 40, fontWeight: 600 },
     title: { fontSize: 25, fontWeight: 600 },
