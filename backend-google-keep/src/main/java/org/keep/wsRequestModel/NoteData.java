@@ -9,8 +9,7 @@ import org.keep.entity.Note;
 public class NoteData {
     private String noteId;
     private String title;
-    private String noteContent; // Json parsed string
-    private String emailId;
+    private String content; // Json parsed string
 
     public NoteData() {
     }
@@ -18,7 +17,6 @@ public class NoteData {
     public NoteData(Note note) {
         this.noteId = note.getNoteId();
         this.title = note.getTitle();
-        this.noteContent = note.getNoteContent();
-        this.emailId = note.getEmailId();
+        this.content = note.getNoteContent();
     }
 }

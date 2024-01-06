@@ -1,10 +1,8 @@
 package org.keep.dao;
 
 import org.keep.entity.Note;
-import org.keep.entity.User;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;

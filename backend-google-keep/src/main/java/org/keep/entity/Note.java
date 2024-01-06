@@ -2,8 +2,6 @@ package org.keep.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
-import org.keep.enums.NoteType;
 import org.keep.wsRequestModel.NoteData;
 import org.mongodb.morphia.annotations.Id;
 
@@ -22,7 +20,19 @@ public class Note {
     public Note(NoteData noteData) {
         this.noteId = noteData.getNoteId();
         this.title = noteData.getTitle();
-        this.noteContent = noteData.getNoteContent();
-        this.emailId = noteData.getEmailId();
+        this.noteContent = noteData.getContent();
     }
 }
+
+/*
+{
+    "type" : "numbered",
+    "content": [
+        "apple",
+        "oranges",
+        "pineapple"
+    ]
+}
+
+
+ */

@@ -1,12 +1,8 @@
 package org.keep.resource;
 
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import io.dropwizard.auth.Auth;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.NodeType;
-import org.bson.types.ObjectId;
 import org.keep.authentication.UserSession;
 import org.keep.entity.Note;
-import org.keep.enums.NoteType;
 import org.keep.service.AccessTokenService;
 import org.keep.service.INoteService;
 import org.keep.service.IUserService;
@@ -58,7 +54,7 @@ public class NoteResource {
     @Path("delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteNote(NoteData noteData) {
+    public Response deleteNote(@Auth UserSession userSession, NoteData noteData) {
         try {
             noteService.delete(noteData.getNoteId());
         } catch (Exception e) {
@@ -71,13 +67,13 @@ public class NoteResource {
     @Path("edit")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editNote(NoteData noteData) {
+    public Response editNote(@Auth UserSession userSession, NoteData noteData) {
         try {
             Note note = new Note();
             note.setNoteId(noteData.getNoteId());
             note.setTitle(noteData.getTitle());
-            note.setNoteContent(noteData.getNoteContent());
-            note.setEmailId(noteData.getEmailId());
+            note.setNoteContent(noteData.getContent());
+            note.setEmailId(userSession.getEmailId());
             noteService.edit(note);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

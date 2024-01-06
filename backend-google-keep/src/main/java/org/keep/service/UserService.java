@@ -82,9 +82,8 @@ public class UserService implements IUserService {
             Note note = noteDao.getNote(noteId);
 
             NoteData noteData = new NoteData();
-            noteData.setNoteContent(note.getNoteContent());
+            noteData.setContent(note.getNoteContent());
             noteData.setTitle(note.getTitle());
-            noteData.setEmailId(note.getEmailId());
             noteData.setNoteId(note.getNoteId().toString());
             notes.add(noteData);
         }
