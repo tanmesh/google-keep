@@ -1,13 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Notes from '../component/Notes';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function Home({ route }) {
-  const [notes, setNotes] = useState([] || route.params.notes)
+export default function Home() {
+  const [notes, setNotes] = useState([])
   const [accessToken, setAccessToken] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation();
 
@@ -21,7 +23,8 @@ export default function Home({ route }) {
         console.log('Access token not found');
       }
     } catch (error) {
-      console.error('Error retrieving access token:', error);
+      // Error 
+      console.log('Error retrieving access token:', error);
     }
   };
 
@@ -36,7 +39,8 @@ export default function Home({ route }) {
         setNotes(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching notes:', error);
+        // Error 
+        console.log('Error fetching notes:', error);
       });
   }
 
@@ -55,13 +59,26 @@ export default function Home({ route }) {
     });
   }
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    getExistingNotes();
+    setRefreshing(false);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Google Keep</Text>
-      <Notes notes={notes} setNotes={setNotes} />
+      <Notes
+        notes={notes}
+        setNotes={setNotes}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        navigation={navigation} />
       <View style={{ position: 'absolute', bottom: 0 }}>
         <TouchableOpacity style={styles.loginButton} onPress={handleCreateNewNote}>
-          <Text style={styles.loginButtonText}>Add a note</Text>
+          <Text style={styles.loginButtonText}>
+            <Ionicons name="add-outline" size={20} color="#fff" />
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -84,7 +101,7 @@ const styles = StyleSheet.create({
     marginTop: '20%',
     shadowColor: '#171717',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
     shadowRadius: 3,
   },
   loginButtonText: {

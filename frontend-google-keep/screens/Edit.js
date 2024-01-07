@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 function Edit({ route }) {
-    const { id, title, content, setNotes } = route.params;
+    const { id, title, content } = route.params;
 
     const [title_, setTitle] = useState(title);
     const [listContent, setListContent] = useState([]);
@@ -31,10 +31,6 @@ function Edit({ route }) {
     const handleDeleteItem = (indexToDelete) => {
         const updatedList = listContent.filter((_, index) => index !== indexToDelete);
         setListContent(updatedList);
-    };
-
-    const getAccessToken = async () => {
-
     };
 
     const handleSave = async () => {
@@ -67,16 +63,14 @@ function Edit({ route }) {
                 const data = await response.json();
                 console.log(data);
 
-                setNotes((prevNotes) => {
-                    return prevNotes.map((note) => (note.noteId === id ? note.content : listContent));
-                });
                 navigation.navigate('Home');
             } else {
                 navigation.navigate('Login');
                 console.log('Access token not found');
             }
         } catch (error) {
-            console.error('Error retrieving access token:', error);
+            // Error 
+            console.log('Error retrieving access token:', error);
         }
     }
 
@@ -121,12 +115,11 @@ function Edit({ route }) {
                 placeholder="Enter title here"
             ></TextInput>
             <View style={styles.bodyContainer}>{renderListItems()}</View>
-            <Ionicons
-                name="add-circle-outline"
-                size={60}
-                color="black"
-                style={{ position: 'absolute', bottom: '20%' }}
-                onPress={handleAddItem} />
+            <TouchableOpacity style={[styles.loginButton, { backgroundColor: 'black' }]} onPress={handleAddItem}>
+                <Text style={styles.loginButtonText}>
+                    <Ionicons name="add-outline" size={20} color="#fff" style={{ position: 'absolute', bottom: '20%' }} />
+                </Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton} onPress={handleSave}>
                 <Text style={styles.loginButtonText}>Save</Text>
             </TouchableOpacity>
@@ -163,6 +156,10 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         marginBottom: '10%',
+        shadowColor: '#171717',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 3,
     },
     loginButtonText: {
         color: '#fff',

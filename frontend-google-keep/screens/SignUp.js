@@ -3,19 +3,20 @@ import axios from 'axios';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-function Login() {
+export default function Signup() {
     const [emailId, setEmailId] = useState('');
     const [password, setPassword] = useState('');
 
     const navigation = useNavigation();
 
     const storeAccessToken = async (accessToken) => {
-        // Store access token in AsyncStorage
+        setAccessToken(accessToken)
+
         AsyncStorage.setItem('accessToken', accessToken)
             .then(() => {
                 console.log('Access token stored: ' + accessToken);
+
                 navigation.navigate('Home');
             })
             .catch((error) => {
@@ -34,15 +35,15 @@ function Login() {
             });
     }
 
-    const handleLogin = () => {
+    const handleSignup = () => {
         console.log('emailId:', emailId);
         console.log('Password:', password);
-        axios.post('http://localhost:8080/user/login', {
+        axios.post('http://localhost:8080/user/signin', {
             emailId: emailId,
             password: password,
         })
             .then((response) => {
-                storeAccessToken(response.data.accessToken)
+                navigation.navigate('Login');
             })
             .catch((error) => {
                 // Error 
@@ -50,13 +51,9 @@ function Login() {
             });
     };
 
-    const handleSignUp = () => {
-        navigation.navigate('SignUp');
-    }
-
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Login</Text>
+            <Text style={styles.header}>SignUp</Text>
 
             <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
                 <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
@@ -80,18 +77,9 @@ function Login() {
                 ></TextInput>
             </View>
 
-            <View style={{flexDirection: 'row', gap: '20%', marginTop: '5%'}}>
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Login</Text>
+            <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
+                <Text style={styles.loginButtonText}>SignUp</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.loginButton, {backgroundColor: 'green'}]} onPress={handleSignUp}>
-                <Text style={styles.loginButtonText}>
-                    Sign Up
-                    <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
-                </Text>
-            </TouchableOpacity>
-            </View>
         </View>
     )
 }
@@ -140,7 +128,7 @@ const styles = StyleSheet.create({
         width: '65%',
     },
     loginButton: {
-        backgroundColor: 'blue',
+        backgroundColor: 'green',
         padding: 10,
         borderRadius: 10,
         marginTop: '20%',
@@ -156,6 +144,3 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-
-
-export default Login

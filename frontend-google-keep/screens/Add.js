@@ -4,8 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function Add({ route }) {
-    const { notes} = route.params;
+function Add() {
 
     const id = ''
     const title = ''
@@ -67,16 +66,14 @@ function Add({ route }) {
                 const data = await response.json();
                 console.log(data);
 
-                notes.push(data)
-                navigation.navigate('Home', {
-                    notes: notes,
-                });
+                navigation.navigate('Home');
             } else {
                 navigation.navigate('Login');
                 console.log('Access token not found');
             }
         } catch (error) {
-            console.error('Error retrieving access token:', error);
+            // Error 
+            console.log('Error retrieving access token:', error);
         }
     }
 
@@ -121,12 +118,11 @@ function Add({ route }) {
                 placeholder="Enter title here"
             ></TextInput>
             <View style={styles.bodyContainer}>{renderListItems()}</View>
-            <Ionicons
-                name="add-circle-outline"
-                size={60}
-                color="black"
-                style={{ position: 'absolute', bottom: '20%' }}
-                onPress={handleAddItem} />
+            <TouchableOpacity style={[styles.loginButton, { backgroundColor: 'black' }]} onPress={handleAddItem}>
+                <Text style={styles.loginButtonText}>
+                    <Ionicons name="add-outline" size={20} color="#fff" style={{ position: 'absolute', bottom: '20%' }} />
+                </Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton} onPress={handleSave}>
                 <Text style={styles.loginButtonText}>Save</Text>
             </TouchableOpacity>
@@ -163,6 +159,10 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         marginBottom: '10%',
+        shadowColor: '#171717',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 3,
     },
     loginButtonText: {
         color: '#fff',

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableHighlight } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-function NoteItem({ id, title, content, setNotes }) {
+function NoteItem({ id, title, content }) {
     const [type, setType] = useState('');
     const [data, setData] = useState('' || []);
 
@@ -16,7 +16,8 @@ function NoteItem({ id, title, content, setNotes }) {
             setType(parsedContent.type);
             setData(parsedContent.content);
         } catch (error) {
-            console.error('Error parsing content as JSON:', error);
+            // Error 
+            console.log('Error parsing content as JSON:', error);
         }
     }, [content])
 
@@ -31,7 +32,6 @@ function NoteItem({ id, title, content, setNotes }) {
                     title: title,
                     content: content,
                     id: id,
-                    setNotes: setNotes,
                 });
             }}
             onPressOut={() => setBackgroundColor('#ffcd67')}
