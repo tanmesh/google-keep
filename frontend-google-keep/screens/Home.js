@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Notes from '../component/Notes';
 
-export default function Home() {
-  const [notes, setNotes] = useState([])
+export default function Home({ route }) {
+  const [notes, setNotes] = useState([] || route.params.notes)
   const [accessToken, setAccessToken] = useState('');
 
   const navigation = useNavigation();
@@ -43,23 +43,23 @@ export default function Home() {
   useEffect(() => {
     getAccessToken()
     console.log('accessToken:', accessToken);
-  }, [])
+  }, [accessToken])
 
   useEffect(() => {
-    if (accessToken) {
-      getExistingNotes();
-    }
-
+    getExistingNotes()
   }, [accessToken])
 
   const handleCreateNewNote = () => {
+    navigation.navigate('Add', {
+      notes: notes,
+    });
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Google Keep</Text>
-      <Notes notes={notes} />
-      <View style={{ position: 'relative', marginVertical: '70%' }}>
+      <Notes notes={notes} setNotes={setNotes} />
+      <View style={{ position: 'absolute', bottom: 0 }}>
         <TouchableOpacity style={styles.loginButton} onPress={handleCreateNewNote}>
           <Text style={styles.loginButtonText}>Add a note</Text>
         </TouchableOpacity>
@@ -74,14 +74,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: '20%',
+    marginTop: '10%',
   },
   header: { fontSize: 40, fontWeight: 600 },
   loginButton: {
-    backgroundColor: 'grey',
+    backgroundColor: 'black',
     padding: 10,
     borderRadius: 10,
     marginTop: '20%',
+    shadowColor: '#171717',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
   },
   loginButtonText: {
     color: '#fff',

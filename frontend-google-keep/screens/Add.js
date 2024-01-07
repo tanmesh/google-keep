@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function Edit({ route }) {
-    const { id, title, content, setNotes } = route.params;
+function Add({ route }) {
+    const { notes} = route.params;
+
+    const id = ''
+    const title = ''
+    const content = ''
+
+    const navigation = useNavigation();
 
     const [title_, setTitle] = useState(title);
     const [listContent, setListContent] = useState([]);
     const [type, setType] = useState('');
     const [accessToken, setAccessToken] = useState('');
-
-    const navigation = useNavigation();
 
     useEffect(() => {
         try {
@@ -33,10 +37,6 @@ function Edit({ route }) {
         setListContent(updatedList);
     };
 
-    const getAccessToken = async () => {
-
-    };
-
     const handleSave = async () => {
         try {
             const accessToken = await AsyncStorage.getItem('accessToken');
@@ -51,7 +51,7 @@ function Edit({ route }) {
 
                 let content = listContent
                 let jsonString = JSON.stringify({ content });
-                const response = await fetch('http://localhost:8080/note/edit', {
+                const response = await fetch('http://localhost:8080/note/add', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -67,10 +67,10 @@ function Edit({ route }) {
                 const data = await response.json();
                 console.log(data);
 
-                setNotes((prevNotes) => {
-                    return prevNotes.map((note) => (note.noteId === id ? note.content : listContent));
+                notes.push(data)
+                navigation.navigate('Home', {
+                    notes: notes,
                 });
-                navigation.navigate('Home');
             } else {
                 navigation.navigate('Login');
                 console.log('Access token not found');
@@ -172,4 +172,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Edit
+export default Add

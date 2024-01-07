@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -40,10 +40,20 @@ function Login() {
         AsyncStorage.setItem('accessToken', accessToken)
             .then(() => {
                 console.log('Access token stored: ' + accessToken);
+
                 navigation.navigate('Home');
             })
             .catch((error) => {
                 console.error('Error storing access token:', error);
+            });
+
+        AsyncStorage.setItem('emailId', emailId)
+            .then(() => {
+                console.log('emailId stored: ' + emailId);
+                navigation.navigate('Home');
+            })
+            .catch((error) => {
+                console.error('Error storing emailId:', emailId);
             });
     }
 
@@ -66,8 +76,8 @@ function Login() {
         <View style={styles.container}>
             <Text style={styles.header}>Login</Text>
 
-            <View style={styles.inputContainer}>
-                <Text style={{ fontSize: 20, width: '25%' }}>EmailId : </Text>
+            <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
+                <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
                 <TextInput
                     style={styles.inputField}
                     value={emailId}
@@ -76,8 +86,8 @@ function Login() {
                     autoCapitalize='none'
                 ></TextInput>
             </View>
-            <View style={styles.passwordContainer}>
-                <Text style={{ fontSize: 20, width: '25%' }}>Password : </Text>
+            <View style={[styles.passwordContainer, { flexDirection: 'row' }]}>
+                <Text style={{ fontSize: 20, width: '35%' }}>Password : </Text>
                 <TextInput
                     style={styles.passwordField}
                     value={password}
@@ -122,14 +132,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         fontSize: 20,
-        width: '80%',
+        width: '65%',
     },
     passwordContainer: {
         width: '80%',
         justifyContent: 'flex-start',
         flexDirection: 'row',
         alignItems: 'center',
-
     },
     passwordField: {
         borderWidth: 1,
@@ -137,7 +146,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         fontSize: 20,
-        width: '80%',
+        width: '65%',
     },
     loginButton: {
         backgroundColor: 'blue',

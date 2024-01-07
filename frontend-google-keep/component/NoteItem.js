@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, TouchableHighlight, CheckBox } from 'react-native'
+import { Text, View, StyleSheet, TouchableHighlight } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-function NoteItem({ id, title, content }) {
+function NoteItem({ id, title, content, setNotes }) {
     const [type, setType] = useState('');
     const [data, setData] = useState('' || []);
 
@@ -31,6 +31,7 @@ function NoteItem({ id, title, content }) {
                     title: title,
                     content: content,
                     id: id,
+                    setNotes: setNotes,
                 });
             }}
             onPressOut={() => setBackgroundColor('#ffcd67')}
@@ -41,13 +42,9 @@ function NoteItem({ id, title, content }) {
                     <Ionicons name="pencil" size={15} color="black" />
                 </View>
                 <Text style={styles.content}>
-                    {/* {type === 'text' ? data : null} */}
-                    {type !== 'numbered' ? data : null}
-                    {type === 'numbered'
-                        ? data.map((item, index) => (
-                            <Text key={index}> {index + 1}. {item}{'\n'}</Text>
-                        ))
-                        : null}
+                    {data.map((item, index) => (
+                        <Text key={index}> {index + 1}. {item}{'\n'}</Text>
+                    ))}
                 </Text>
             </View>
         </TouchableHighlight>
