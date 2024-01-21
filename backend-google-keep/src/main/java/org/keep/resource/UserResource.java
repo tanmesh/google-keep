@@ -35,17 +35,17 @@ public class UserResource {
         try {
             String emailId = userData.getEmailId();
             if (emailId == null || emailId.isEmpty()) {
-                throw new Exception("Issue with credentials");
+                throw new Exception("EmailId cannot be null");
             }
 
             String password = userData.getPassword();
             if (password == null || password.isEmpty()) {
-                throw new Exception("Issue with credentials");
+                throw new Exception("Password cannot be null");
             }
 
             userService.signup(emailId, password);
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
         return Response.status(Response.Status.ACCEPTED).build();
     }
@@ -59,17 +59,17 @@ public class UserResource {
         try {
             String emailId = userData.getEmailId();
             if (emailId == null || emailId.isEmpty()) {
-                throw new Exception("email cannot be null");
+                throw new Exception("EmailId cannot be null");
             }
 
             String password = userData.getPassword();
             if (password == null || password.isEmpty()) {
-                throw new Exception("password cannot be null");
+                throw new Exception("Password cannot be null");
             }
 
             userSession = userService.login(emailId, password);
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
         return Response.status(Response.Status.ACCEPTED).entity(userSession).build();
     }

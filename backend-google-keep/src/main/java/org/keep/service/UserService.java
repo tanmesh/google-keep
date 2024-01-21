@@ -12,11 +12,14 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserService implements IUserService {
     private UserDao userDao;
-
     private NoteDao noteDao;
+    private static final String EMAIL_REGEX =
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     private AccessTokenService accessTokenService;
 
@@ -28,15 +31,21 @@ public class UserService implements IUserService {
 
     @Override
     public void signup(String emailId, String password) throws Exception {
+        if (!isValidEmail(emailId)) {
+            throw new Exception("Enter valid emailId");
+        }
         userDao.addUser(emailId, password);
     }
 
     @Override
     public UserSession login(String emailId, String password) throws Exception {
+        if (!isValidEmail(emailId)) {
+            throw new Exception("Enter valid emailId");
+        }
         User user = userDao.getUser(emailId);
 
-        if(user == null) {
-            throw new Exception("Its a new user");
+        if (user == null) {
+            throw new Exception("Invalid credentials");
         }
 
         UserSession userSession;
@@ -44,18 +53,18 @@ public class UserService implements IUserService {
             String existingPassword = user.getPassword();
             System.out.println("Input password: " + password);
             System.out.println("Existing password: " + existingPassword);
-            if(!decrypt(password, existingPassword)) {
-                throw new Exception("Password doesn't match");
+            if (!decrypt(password, existingPassword)) {
+                throw new Exception("Invalid credentials");
             }
 
             String accessToken = UUID.randomUUID().toString();
             userSession = new UserSession(accessToken, emailId);
 
-            if(!accessTokenService.saveAccessToken(userSession)) {
+            if (!accessTokenService.saveAccessToken(userSession)) {
                 throw new Exception("Unable to save access token");
             }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Invalid credentials");
         }
 
         return userSession;
@@ -68,6 +77,7 @@ public class UserService implements IUserService {
     private boolean decrypt(String newPassword, String prevPassword) {
         return BCrypt.checkpw(newPassword, prevPassword);
     }
+
     @Override
     public UserData getUser(String emailId) throws Exception {
         User user = userDao.getUser(emailId);
@@ -107,5 +117,11 @@ public class UserService implements IUserService {
             notes.add(noteData);
         }
         return notes;
+    }
+
+    private boolean isValidEmail(String email) {
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

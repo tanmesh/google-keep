@@ -5,6 +5,7 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+
 import org.keep.authentication.AccessTokenAuthenticator;
 import org.keep.authentication.AccessTokenSecurityProvider;
 import org.keep.dao.NoteDao;

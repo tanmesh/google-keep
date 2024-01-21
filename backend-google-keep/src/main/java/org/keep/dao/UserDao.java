@@ -18,7 +18,7 @@ public class UserDao extends BasicDAO<User, String> {
     public void addUser(String emailId, String password) throws Exception {
         Query q = this.getDatastore().createQuery(User.class).field("emailId").equal(emailId);
         if (q.get() != null) {
-            throw new Exception("User already exists");
+            throw new Exception("Use new EmailId");
         }
 
         User user = new User();
