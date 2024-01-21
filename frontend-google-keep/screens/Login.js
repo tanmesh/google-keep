@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { showMessage } from "react-native-flash-message";
 
-function Login() {
-    const [emailId, setEmailId] = useState('');
-    const [password, setPassword] = useState('');
+function Login({route}) {
+    const [emailId, setEmailId] = useState(route.params?.emailId);
+    const [password, setPassword] = useState(route.params?.password);
 
     const navigation = useNavigation();
 
@@ -21,6 +22,10 @@ function Login() {
             .catch((error) => {
                 // Error 
                 console.log('Error storing access token:', error);
+                showMessage({
+                    message: 'Error storing access token',   
+                    type: "danger",
+                });
             });
 
         AsyncStorage.setItem('emailId', emailId)
@@ -31,6 +36,10 @@ function Login() {
             .catch((error) => {
                 // Error 
                 console.log('Error storing emailId:', emailId);
+                showMessage({
+                    message: 'Error storing emailId',   
+                    type: "danger",
+                });
             });
     }
 
@@ -43,10 +52,18 @@ function Login() {
         })
             .then((response) => {
                 storeAccessToken(response.data.accessToken)
+                showMessage({
+                    message: 'Login successful',   
+                    type: "success",
+                });
             })
             .catch((error) => {
                 // Error 
                 console.log('Login failed:', error);
+                showMessage({
+                    message: error.response.data.message,   
+                    type: "danger",
+                });
             });
     };
 
@@ -55,44 +72,46 @@ function Login() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Login</Text>
+        <>
+            <View style={styles.container}>
+                <Text style={styles.header}>Login</Text>
 
-            <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
-                <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
-                <TextInput
-                    style={styles.inputField}
-                    value={emailId}
-                    onChangeText={(text) => setEmailId(text)}
-                    placeholder="Enter EmailId"
-                    autoCapitalize='none'
-                ></TextInput>
-            </View>
-            <View style={[styles.passwordContainer, { flexDirection: 'row' }]}>
-                <Text style={{ fontSize: 20, width: '35%' }}>Password : </Text>
-                <TextInput
-                    style={styles.passwordField}
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    placeholder="Enter password"
-                    secureTextEntry={true}
-                    autoCapitalize='none'
-                ></TextInput>
-            </View>
+                <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
+                    <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
+                    <TextInput
+                        style={styles.inputField}
+                        value={emailId}
+                        onChangeText={(text) => setEmailId(text)}
+                        placeholder="Enter EmailId"
+                        autoCapitalize='none'
+                    ></TextInput>
+                </View>
+                <View style={[styles.passwordContainer, { flexDirection: 'row' }]}>
+                    <Text style={{ fontSize: 20, width: '35%' }}>Password : </Text>
+                    <TextInput
+                        style={styles.passwordField}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        placeholder="Enter password"
+                        secureTextEntry={true}
+                        autoCapitalize='none'
+                    ></TextInput>
+                </View>
 
-            <View style={{flexDirection: 'row', gap: '20%', marginTop: '5%'}}>
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
+                <View style={{ flexDirection: 'row', gap: '20%', marginTop: '5%' }}>
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.loginButton, {backgroundColor: 'green'}]} onPress={handleSignUp}>
-                <Text style={styles.loginButtonText}>
-                    Sign Up
-                    <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
-                </Text>
-            </TouchableOpacity>
+                    <TouchableOpacity style={[styles.loginButton, { backgroundColor: 'green' }]} onPress={handleSignUp}>
+                        <Text style={styles.loginButtonText}>
+                            Sign Up
+                            <Ionicons name="chevron-forward-outline" size={20} color="#fff" />
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </>
     )
 }
 
@@ -103,7 +122,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginTop: '20%',
+        marginTop: '30%',
     },
     header: {
         fontSize: 40,
@@ -115,7 +134,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: '50%',
+        marginTop: '30%',
     },
     inputField: {
         borderWidth: 1,

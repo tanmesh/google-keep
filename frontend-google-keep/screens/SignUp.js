@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function Signup() {
     const [emailId, setEmailId] = useState('');
@@ -16,12 +17,16 @@ export default function Signup() {
         AsyncStorage.setItem('accessToken', accessToken)
             .then(() => {
                 console.log('Access token stored: ' + accessToken);
-
+                
                 navigation.navigate('Home');
             })
             .catch((error) => {
                 // Error 
                 console.log('Error storing access token:', error);
+                showMessage({
+                    message: error.response.data.message,
+                    type: "danger",
+                });
             });
 
         AsyncStorage.setItem('emailId', emailId)
@@ -32,6 +37,10 @@ export default function Signup() {
             .catch((error) => {
                 // Error 
                 console.log('Error storing emailId:', emailId);
+                showMessage({
+                    message: error.response.data.message,
+                    type: "danger",
+                });
             });
     }
 
@@ -43,44 +52,56 @@ export default function Signup() {
             password: password,
         })
             .then((response) => {
-                navigation.navigate('Login');
+                navigation.navigate('Login', { emailId: emailId, password: password });
+                showMessage({
+                    message: 'Signup successful',   
+                    type: "success",
+                });
             })
             .catch((error) => {
                 // Error 
-                console.log('Login failed:', error);
+                console.log('Signup failed:', error);
+                showMessage({
+                    message: error.response.data.message,
+                    type: "danger",
+                });
             });
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>SignUp</Text>
+        <>
+            <FlashMessage position="top" />
 
-            <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
-                <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
-                <TextInput
-                    style={styles.inputField}
-                    value={emailId}
-                    onChangeText={(text) => setEmailId(text)}
-                    placeholder="Enter EmailId"
-                    autoCapitalize='none'
-                ></TextInput>
-            </View>
-            <View style={[styles.passwordContainer, { flexDirection: 'row' }]}>
-                <Text style={{ fontSize: 20, width: '35%' }}>Password : </Text>
-                <TextInput
-                    style={styles.passwordField}
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    placeholder="Enter password"
-                    secureTextEntry={true}
-                    autoCapitalize='none'
-                ></TextInput>
-            </View>
+            <View style={styles.container}>
+                <Text style={styles.header}>SignUp</Text>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
-                <Text style={styles.loginButtonText}>SignUp</Text>
-            </TouchableOpacity>
-        </View>
+                <View style={[styles.inputContainer, { flexDirection: 'row' }]}>
+                    <Text style={{ fontSize: 20, width: '35%' }}>EmailId : </Text>
+                    <TextInput
+                        style={styles.inputField}
+                        value={emailId}
+                        onChangeText={(text) => setEmailId(text)}
+                        placeholder="Enter EmailId"
+                        autoCapitalize='none'
+                    ></TextInput>
+                </View>
+                <View style={[styles.passwordContainer, { flexDirection: 'row' }]}>
+                    <Text style={{ fontSize: 20, width: '35%' }}>Password : </Text>
+                    <TextInput
+                        style={styles.passwordField}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        placeholder="Enter password"
+                        secureTextEntry={true}
+                        autoCapitalize='none'
+                    ></TextInput>
+                </View>
+
+                <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
+                    <Text style={styles.loginButtonText}>SignUp</Text>
+                </TouchableOpacity>
+            </View>
+        </>
     )
 }
 
@@ -91,7 +112,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginTop: '20%',
+        marginTop: '15%',
     },
     header: {
         fontSize: 40,
@@ -103,7 +124,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: '50%',
+        marginTop: '30%',
     },
     inputField: {
         borderWidth: 1,

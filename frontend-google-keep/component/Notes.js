@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, FlatList, Text } from 'react-native
 import NoteItem from './NoteItem'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage } from "react-native-flash-message";
 
 function Notes({ notes, setNotes, refreshing, onRefresh, navigation }) {
     const handleDeleteItem = async (indexToDelete) => {
@@ -35,12 +36,14 @@ function Notes({ notes, setNotes, refreshing, onRefresh, navigation }) {
         } catch (error) {
             // Error 
             console.log('Error retrieving access token:', error);
+            showMessage({
+                message: error.response.data.message,
+                type: "danger",
+            });
         }
     }
 
     if (notes === null || notes.length === 0) {
-        console.log('here == notes is empty')
-
         notes = [{}]
         return (
             <FlatList
@@ -70,6 +73,7 @@ function Notes({ notes, setNotes, refreshing, onRefresh, navigation }) {
         <FlatList
             style={styles.note}
             data={notes}
+            keyExtractor={(note) => note.noteId.toString()}
             renderItem={(note) => {
                 return (
                     <View style={{ flexDirection: 'row' }}>

@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Notes from '../component/Notes';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default function Home() {
   const [notes, setNotes] = useState([])
@@ -25,6 +26,10 @@ export default function Home() {
     } catch (error) {
       // Error 
       console.log('Error retrieving access token:', error);
+      showMessage({
+        message: 'Error retrieving access token',
+        type: "danger",
+      });
     }
   };
 
