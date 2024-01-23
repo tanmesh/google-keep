@@ -28,7 +28,7 @@ public class UserResource {
     }
 
     @POST
-    @Path("signin")
+    @Path("signup")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(UserData userData) {
