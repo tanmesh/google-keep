@@ -47,7 +47,7 @@ export default function Signup() {
     const handleSignup = () => {
         console.log('emailId:', emailId);
         console.log('Password:', password);
-        axios.post('http://localhost:8080/user/signin', {
+        axios.post('http://localhost:8080/user/signup', {
             emailId: emailId,
             password: password,
         })
