@@ -1,4 +1,4 @@
-# Google Keep 
+# Google Keep Service Design Document
 
 ## Overview 
 The goal of this project is to create a clone of the core functionality of Google Keep, a simple and widely used note-taking app. The emphasis is on building a distributed note-taking tool with both web and mobile user interfaces.
@@ -131,7 +131,4 @@ For more detailed -- look into https://documenter.getpostman.com/view/6625237/2s
 2. Adding search functionality through the notes.
 3. Adding ability to record and save voice notes.
 4. Adding ability to order and pin notes in UI.
-
-
-## Future tasks
 
